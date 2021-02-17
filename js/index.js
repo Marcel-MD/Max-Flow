@@ -21,13 +21,13 @@ let links = [
     {source: 5, target: 1, capacity: 10, flow: 0 },
   ];
 
-// Source and Target of our flow
-let s = 0;
-let t = 1;
+// Sources and Targets of our flow, here can go any number of nodes
+let s = [0, 2];
+let t = [1, 4];
 
 // This part works only in browser console
 // It shows how my algorithm works for now
-console.log("The max flow of current graph is " + ford(links, nodes, s, t));
+console.log("The max flow of current graph is " + multiFord(links, nodes, s, t));
 console.log(links);
 
 //////// This part of code is just an example of graph visualization /////////

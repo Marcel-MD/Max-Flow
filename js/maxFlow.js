@@ -89,3 +89,33 @@ function ford(links, nodes, s, t)
 
   return maxFlow;
 }
+
+// Implementation of Ford–Fulkerson algorithm for multiple source and target nodes
+function multiFord(links, nodes, s, t)
+{
+    let myNodes = JSON.parse(JSON.stringify(nodes));
+    let myLinks = JSON.parse(JSON.stringify(links));
+    myNodes.push({name: "fakeS"});
+    myNodes.push({name: "fakeT"});
+    let fakeS = myNodes.length - 2;
+    let fakeT = myNodes.length - 1;
+
+    for(let i = 0; i < s.length; i++)
+    {
+        myLinks.push({source: fakeS, target: s[i], capacity: 900719925474099, flow: 0});
+    }
+
+    for(let i = 0; i < t.length; i++)
+    {
+        myLinks.push({source: t[i], target: fakeT, capacity: 900719925474099, flow: 0});
+    }
+
+    let maxFlow = ford(myLinks, myNodes, fakeS, fakeT);
+    
+    for(let i = 0; i < links.length; i++)
+    {
+        links[i].flow = myLinks[i].flow;
+    }
+
+    return maxFlow;
+}
