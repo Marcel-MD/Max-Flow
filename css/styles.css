@@ -24,11 +24,14 @@ section {
 
 .btn {
   margin: 5% 0;
+  font-weight: 600;
 }
 
 /* Title Section */
 h1 {
-  font-weight: bold;
+  font-family: "Montserrat";
+  font-weight: 700;
+  text-align: center;
 }
 img {
   margin-bottom: 20%;
