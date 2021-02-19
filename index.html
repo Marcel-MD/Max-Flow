@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link rel="shortcut icon" type="image/png" href="images/graph.png"/>
+    <link rel="shortcut icon" type="image/png" href="images/graph.png" />
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -16,8 +16,11 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="css/styles.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
     <title>Graph Algorithms</title>
   </head>
@@ -25,45 +28,53 @@
     <section id="title">
       <div class="row">
         <div class="col-lg-4">
-          <img
-            src="images/faf.png"
-            alt=""
-            height="72"
-          />
+          <img src="images/faf.png" alt="" height="72" />
 
           <form class="form-signin">
             <input
+              id="startData"
               type="text"
               class="form-control top"
               placeholder="Start Nodes"
-              name="s"
+              name="start"
               required
               autofocus
               autocomplete="off"
             />
 
             <input
+              id="endData"
               type="text"
               class="form-control bottom"
               placeholder="End Nodes"
-              name="t"
+              name="end"
               required
               autocomplete="off"
             />
 
-            <button class="btn btn-lg btn-warning btn-block" type="submit">
+            <button
+              id="maxFlowBtn"
+              class="btn btn-lg btn-warning btn-block"
+              type="button"
+            >
               Maximum Flow
             </button>
 
-            <button class="btn btn-lg btn-warning btn-block" type="submit">
+            <button
+              id="shortPathBtn"
+              class="btn btn-lg btn-warning btn-block"
+              type="button"
+            >
               Shortest Path
             </button>
 
-            <button class="btn btn-lg btn-warning btn-block" type="submit">
+            <button
+              id="minTreeBtn"
+              class="btn btn-lg btn-warning btn-block"
+              type="button"
+            >
               Minimum Spanning Tree
             </button>
-
-
           </form>
         </div>
 
@@ -88,11 +99,11 @@
             </div>
           </div>
           <div class="col-lg-4">
-            <button class="btn btn-warning">Add Edges</button>
+            <button class="btn btn-warning" type="button">Add Edges</button>
             <br />
-            <button class="btn btn-warning">Delete Edges</button>
+            <button class="btn btn-warning" type="button">Delete Edges</button>
             <br />
-            <button class="btn btn-danger">Delete Graph</button>
+            <button class="btn btn-danger" type="button">Delete Graph</button>
           </div>
         </div>
       </form>
