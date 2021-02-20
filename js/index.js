@@ -1,11 +1,11 @@
 // Graph Nodes
 let nodes = [
-  { index: 0, name: "s" },
-  { index: 1, name: "t" },
-  { index: 2, name: "a" },
-  { index: 3, name: "b" },
-  { index: 4, name: "c" },
-  { index: 5, name: "d" },
+  { name: "s" },
+  { name: "t" },
+  { name: "a" },
+  { name: "b" },
+  { name: "c" },
+  { name: "d" },
 ];
 
 // Graph Links/Eadges
@@ -25,7 +25,7 @@ let links = [
 let s = [];
 let t = [];
 
-// Adds nodes from DOM
+// Adds start end nodes from DOM
 function addStartEndNodes() {
   let start = document.getElementById("startData").value;
   let end = document.getElementById("endData").value;
@@ -53,8 +53,48 @@ function addStartEndNodes() {
   }
 }
 
+// Text area / Editor input
+
+function addEdge(s, t, c) {
+  for (let i = 0; i < links.length; i++) {
+    if (links[i].source === s && links[i].target === t) {
+      links[i].capacity = c;
+      return;
+    }
+  }
+  links.push({ source: s, target: t, capacity: c, flow: 0 });
+}
+
+function getNode(name) {
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].name == name) {
+      return i;
+    }
+  }
+
+  nodes.push({ name: name });
+  return nodes.length - 1;
+}
+
+function getText() {
+  let lines = document.getElementById("textAreaID").value.split("\n");
+  let edgeData;
+  console.log(lines);
+  for (let i = 0; i < lines.length; i++) {
+    edgeData = lines[i].split(" ");
+    console.log(edgeData);
+    if (edgeData.length >= 3) {
+      let s = getNode(edgeData[0]);
+      let t = getNode(edgeData[1]);
+      let c = parseInt(edgeData[2], 10);
+      addEdge(s, t, c);
+    }
+  }
+}
+
 // Buttons functionality
 
+// Max Flow Button
 document.getElementById("maxFlowBtn").onclick = function () {
   addStartEndNodes();
   if (s.length != 0 && t.length != 0) {
@@ -62,6 +102,13 @@ document.getElementById("maxFlowBtn").onclick = function () {
   } else {
     alert("Add start and end nodes.");
   }
+};
+
+// Add Edge
+document.getElementById("addEdgesBtn").onclick = function () {
+  getText();
+  graphRemove();
+  graphInit();
 };
 
 //////////////////// D3.js ///////////////////
@@ -176,18 +223,10 @@ function graphInit() {
   }
 }
 
-//////////// TEST CASE ///////////////
-// The graph will dissapear and apear
-
+// The firs graph render
 graphInit();
 
-setTimeout(function () {
-  graphRemove();
-}, 2000);
-
-setTimeout(function () {
-  graphInit();
-}, 4000);
-
+//////////// TEST CASE ///////////////
+// You can add edges now
 // You can add start and end nodes to calculate the max flow
 // The nodes are declared by their names and are separated by one space

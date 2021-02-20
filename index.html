@@ -89,17 +89,23 @@
           <div class="col-lg-8">
             <div class="form-group">
               <textarea
+                id="textAreaID"
                 type="text"
                 rows="10"
                 name="content"
                 class="form-control"
                 autocomplete="off"
-                placeholder="First line contains the number of new edges. Next n lines contain two strings (source and target) and an integer (max capacity of the edge). The buttons are self-explanatory"
+                placeholder="Every line should contain two strings (source and target) and an integer (capacity) all separated by space.
+Pumpkin FAF 203
+FCIM Pumpkin 69
+These two lines will create two edges with the flow: FCIM -69-> Pimpkin -203-> FAF."
               ></textarea>
             </div>
           </div>
           <div class="col-lg-4">
-            <button class="btn btn-warning" type="button">Add Edges</button>
+            <button class="btn btn-warning" type="button" id="addEdgesBtn">
+              Add Edges
+            </button>
             <br />
             <button class="btn btn-warning" type="button">Delete Edges</button>
             <br />
