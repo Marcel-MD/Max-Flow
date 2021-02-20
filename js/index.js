@@ -111,6 +111,14 @@ document.getElementById("addEdgesBtn").onclick = function () {
   graphInit();
 };
 
+// Delete Graph
+document.getElementById("deleteGraphBtn").onclick = function () {
+  nodes = [];
+  links = [];
+  graphRemove();
+  graphInit();
+};
+
 //////////////////// D3.js ///////////////////
 
 // Iura daca stii vre-o metoda mai eficienta scrie
