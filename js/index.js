@@ -121,8 +121,6 @@ document.getElementById("deleteGraphBtn").onclick = function () {
 
 //////////////////// D3.js ///////////////////
 
-// Iura daca stii vre-o metoda mai eficienta scrie
-
 // These variables are used by D3.js to plot the graph
 // These copies are created because D3.js changes some esential object proprieties and max flow algorithm won't work
 let d3links; // Here will be a copy of links
@@ -144,8 +142,7 @@ function graphInit() {
   d3links = JSON.parse(JSON.stringify(links));
   d3nodes = JSON.parse(JSON.stringify(nodes));
 
-  //////// This part of code is just an example of graph visualization /////////
-  // PS. I don't have a clue how D3.js library works
+  // This part of code is an good example of graph visualization with d3.js
 
   //initilize svg or grab svg
   svg = d3.select("svg");
@@ -155,9 +152,8 @@ function graphInit() {
   var simulation = d3
     .forceSimulation(d3nodes)
     .force("link", d3.forceLink().links(d3links))
-    .force("charge", d3.forceManyBody().strength(-30))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .on("tick", ticked);
+    .force("charge", d3.forceManyBody().strength(-1000))
+    .force("center", d3.forceCenter(width / 2, height / 2));
 
   link = svg
     .append("g")
@@ -166,28 +162,37 @@ function graphInit() {
     .data(d3links)
     .enter()
     .append("line")
-    .attr("stroke-width", function (d) {
-      return 3;
-    });
+    .attr("stroke-width", 5)
+    .attr("stroke", "lightgray")
+    .attr("stroke-opacity", "0.5");
 
   node = svg
     .append("g")
     .attr("class", "nodes")
-    .selectAll("circle")
+    .selectAll("g")
     .data(d3nodes)
     .enter()
+    .append("g");
+
+  node
     .append("circle")
-    .attr("r", 5)
-    .attr("fill", function (d) {
-      return "red";
+    .attr("r", 7)
+    .attr("fill", "red")
+    .attr("stroke", "white")
+    .attr("stroke-width", "2px");
+
+  node
+    .append("text")
+    .text(function (d) {
+      return d.name;
     })
-    .call(
-      d3
-        .drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended)
-    );
+    .attr("x", 0)
+    .attr("y", -20)
+    .attr("fill", "white");
+
+  simulation.nodes(d3nodes).on("tick", ticked);
+
+  simulation.force("link").links(d3links);
 
   function ticked() {
     link
@@ -204,30 +209,9 @@ function graphInit() {
         return d.target.y;
       });
 
-    node
-      .attr("cx", function (d) {
-        return d.x;
-      })
-      .attr("cy", function (d) {
-        return d.y;
-      });
-  }
-
-  function dragstarted(d) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-
-  function dragged(d) {
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-  }
-
-  function dragended(d) {
-    if (!d3.event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
+    node.attr("transform", function (d) {
+      return "translate(" + d.x + "," + d.y + ")";
+    });
   }
 }
 
@@ -235,6 +219,9 @@ function graphInit() {
 graphInit();
 
 //////////// TEST CASE ///////////////
-// You can add edges now
-// You can add start and end nodes to calculate the max flow
-// The nodes are declared by their names and are separated by one space
+// All the input fields and buttons:
+// Maximum Flow
+// Add Edges
+// Delete Graph
+
+// Are fully functional but without data validation
