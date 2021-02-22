@@ -94,14 +94,18 @@ function getText() {
 
 // Buttons functionality
 
+var result = document.getElementById('result');
+
 // Max Flow Button
 document.getElementById("maxFlowBtn").onclick = function () {
   addStartEndNodes();
   if (s.length != 0 && t.length != 0) {
-    alert("Max flow is " + multiFord(links, nodes, s, t));
+    result.innerHTML = ("Maximum flow is " + multiFord(links, nodes, s, t));
   } else {
     alert("Add start and end nodes.");
   }
+  graphRemove();
+  graphInit();
 };
 
 // Add Edge
@@ -125,14 +129,11 @@ document.getElementById("deleteGraphBtn").onclick = function () {
 // These copies are created because D3.js changes some esential object proprieties and max flow algorithm won't work
 let d3links; // Here will be a copy of links
 let d3nodes; // Here will be a copy of nodes
-let link;
-let node;
 let svg;
 
 // Removes the existing graph
 function graphRemove() {
-  node.remove();
-  link.remove();
+  svg.selectAll("*").remove();
   d3nodes = [];
   d3links = [];
 }
@@ -144,74 +145,130 @@ function graphInit() {
 
   // This part of code is an good example of graph visualization with d3.js
 
-  //initilize svg or grab svg
   svg = d3.select("svg");
-  var width = svg.attr("width");
-  var height = svg.attr("height");
-
-  var simulation = d3
-    .forceSimulation(d3nodes)
-    .force("link", d3.forceLink().links(d3links))
-    .force("charge", d3.forceManyBody().strength(-1000))
+  var colors = d3.scaleOrdinal(d3.schemeCategory10),
+      width = +svg.attr("width"),
+      height = +svg.attr("height"),
+      node,
+      link,
+      edgepaths,
+      edgelabels;
+  
+  svg
+    .append('defs')
+    .append('marker')
+    .attr('id','arrowhead')
+    .attr('viewBox','-0 -5 10 10')
+    .attr('refX', 13)
+    .attr('refY', 0 )
+    .attr('orient','auto')
+    .attr('markerWidth', 3 )
+    .attr('markerHeight', 3 )
+    .attr('xoverflow','visible')
+    .append('svg:path')
+    .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+    .attr('fill', '#999')
+    .attr("fill-opacity", "0.8")
+    .style('stroke','none');
+  
+  var simulation = d3.forceSimulation(d3nodes) 
+  .force("link", d3.forceLink().links(d3links))//.distance(150).strength(1))
+  .force("charge", d3.forceManyBody().strength(-1000))
     .force("center", d3.forceCenter(width / 2, height / 2));
-
-  link = svg
-    .append("g")
-    .attr("class", "links")
-    .selectAll("line")
-    .data(d3links)
-    .enter()
-    .append("line")
-    .attr("stroke-width", 5)
-    .attr("stroke", "lightgray")
-    .attr("stroke-opacity", "0.5");
-
-  node = svg
-    .append("g")
-    .attr("class", "nodes")
-    .selectAll("g")
-    .data(d3nodes)
-    .enter()
-    .append("g");
-
-  node
-    .append("circle")
-    .attr("r", 7)
-    .attr("fill", "red")
-    .attr("stroke", "white")
-    .attr("stroke-width", "2px");
-
-  node
-    .append("text")
-    .text(function (d) {
-      return d.name;
-    })
-    .attr("x", 0)
-    .attr("y", -20)
-    .attr("fill", "white");
-
-  simulation.nodes(d3nodes).on("tick", ticked);
-
-  simulation.force("link").links(d3links);
-
+  
+  update(d3links, d3nodes);
+  
+  // ---
+  function update(links, nodes) {
+    link = svg.selectAll(".link")
+      .data(links)
+      .enter()
+      .append("line")
+      .attr("stroke-width", 5)
+      .attr("stroke", "lightgray")
+      .attr("stroke-opacity", "0.5")
+      .attr("class", "link")
+      .attr('marker-end','url(#arrowhead)')
+  
+    link
+      .append("title")
+      .text(function(d) {
+        if (d.flow) {return d.flow + " / " + d.capacity;}
+        else {return 0 + " / " + d.capacity;}
+      });
+  
+    edgepaths = svg.selectAll(".edgepath")
+      .data(links)
+      .enter()
+      .append('path')
+      .attr("class", 'edgepath')
+      .attr('fill-opacity', 0)
+      .attr('stroke-opacity', 0)
+      .attr('id', (d, i) => 'edgepath' + i)
+      .style("pointer-events", "none");
+  
+    edgelabels = svg.selectAll(".edgelabel")
+      .data(links)
+      .enter()
+      .append('text')
+      .style("pointer-events", "none")
+      .attr('class','edgelabel')
+      .attr('id',(d, i) => 'edgelabel' + i)
+      .attr("writing-mode", "vertical-rl")
+      .attr('font-size', 11)
+      .attr('fill', 'white');
+  
+    edgelabels.append('textPath')
+      .attr('xlink:href', (d, i) =>'#edgepath' + i)
+      .style("text-anchor", "middle")
+      .style("pointer-events", "none")
+      .attr("startOffset", "50%")
+      .text(function(d) {
+        if (d.flow) {return d.flow + " / " + d.capacity;}
+        else {return 0 + " / " + d.capacity;}
+      });
+  
+    node = svg.selectAll(".node")
+      .data(nodes)
+      .enter()
+      .append("g")
+      .attr("class", "node")
+  
+    node.append("circle")
+      .attr("r", 7)
+      .style("fill", (d, i) => colors(i))
+      .attr("stroke", "white")
+      .attr("stroke-width", "2px");
+  
+    node.append("title")
+      .text((d) => d.name);
+  
+    node.append("text")
+      .attr("dy", -10)
+      .text((d) => d.name)
+      .attr('fill', 'white');
+  
+    simulation
+      .nodes(nodes)
+      .on("tick", ticked);
+  
+    simulation.force("link")
+      .links(links);
+  }
+  
   function ticked() {
     link
-      .attr("x1", function (d) {
-        return d.source.x;
-      })
-      .attr("y1", function (d) {
-        return d.source.y;
-      })
-      .attr("x2", function (d) {
-        return d.target.x;
-      })
-      .attr("y2", function (d) {
-        return d.target.y;
-      });
-
-    node.attr("transform", function (d) {
-      return "translate(" + d.x + "," + d.y + ")";
-    });
+      .attr("x1", (d) => d.source.x)
+      .attr("y1", (d) => d.source.y)
+      .attr("x2", (d) => d.target.x)
+      .attr("y2", (d) => d.target.y);
+  
+    node
+      .attr("transform", (d) => "translate(" + d.x + ", " + d.y + ")");
+  
+    edgepaths.attr('d', (d) => (
+      `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.target.y}`
+    ));
   }
 }
 
