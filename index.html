@@ -35,7 +35,7 @@
               id="startData"
               type="text"
               class="form-control top"
-              placeholder="Start Nodes"
+              placeholder="Start Nodes (separated by spaces)"
               name="start"
               required
               autofocus
@@ -46,7 +46,7 @@
               id="endData"
               type="text"
               class="form-control bottom"
-              placeholder="End Nodes"
+              placeholder="End Nodes (separated by spaces)"
               name="end"
               required
               autocomplete="off"
@@ -99,7 +99,8 @@
                 placeholder="Every line should contain two strings (source and target) and an integer (capacity) all separated by space.
 Pumpkin FAF 203
 FCIM Pumpkin 69
-These two lines will create two edges with the flow: FCIM -69-> Pimpkin -203-> FAF."
+These two lines will create two edges with the flow: FCIM -69-> Pimpkin -203-> FAF.
+Please don't create disconnected graphs, for your own good."
               ></textarea>
             </div>
           </div>
@@ -108,8 +109,8 @@ These two lines will create two edges with the flow: FCIM -69-> Pimpkin -203-> F
               Add Edges
             </button>
             <br />
-            <button class="btn btn-warning" type="button">Delete Edges</button>
-            <br />
+            <!-- <button class="btn btn-warning" type="button">Delete Edges</button>
+            <br /> -->
             <button class="btn btn-danger" type="button" id="deleteGraphBtn">
               Delete Graph
             </button>

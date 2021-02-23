@@ -84,10 +84,14 @@ function getText() {
     edgeData = lines[i].split(" ");
     console.log(edgeData);
     if (edgeData.length >= 3) {
-      let s = getNode(edgeData[0]);
-      let t = getNode(edgeData[1]);
       let c = parseInt(edgeData[2], 10);
-      addEdge(s, t, c);
+      if(isNaN(c)) {
+        alert("Invalid edge data on line " + (i+1));
+      } else {
+        let s = getNode(edgeData[0]);
+        let t = getNode(edgeData[1]);
+        addEdge(s, t, c);
+      }
     }
   }
 }
@@ -102,7 +106,7 @@ document.getElementById("maxFlowBtn").onclick = function () {
   if (s.length != 0 && t.length != 0) {
     result.innerHTML = ("Maximum flow is " + multiFord(links, nodes, s, t));
   } else {
-    alert("Add start and end nodes.");
+    alert("Add valid start and end nodes.");
   }
   graphRemove();
   graphInit();
@@ -142,8 +146,6 @@ function graphRemove() {
 function graphInit() {
   d3links = JSON.parse(JSON.stringify(links));
   d3nodes = JSON.parse(JSON.stringify(nodes));
-
-  // This part of code is an good example of graph visualization with d3.js
 
   svg = d3.select("svg");
   var colors = d3.scaleOrdinal(d3.schemeCategory10),
