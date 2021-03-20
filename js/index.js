@@ -153,7 +153,7 @@ function graphInit() {
 
   svg = d3.select("svg");
   var colors = d3.scaleOrdinal(d3.schemeCategory10),
-    width = +svg.attr("width"),
+    width = window.innerWidth*0.75,
     height = +svg.attr("height"),
     node,
     link,

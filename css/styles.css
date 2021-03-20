@@ -23,8 +23,18 @@ h1 {
   text-align: center;
 }
 img {
-  margin-bottom: 20%;
+  display: block;
+  margin-left: 0;
+  margin-right: auto;
+  height: 72px;
+  margin-bottom: 30px;
 }
+@media all and (max-width: 1024px) {
+  img {
+    margin-left: auto;
+  }
+}
+
 #result {
   font-family: "Montserrat";
   font-size: x-large;

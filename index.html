@@ -25,69 +25,72 @@
     <title>Graph Algorithms</title>
   </head>
   <body>
-    <section id="title">
+    <section>
       <div class="row">
-        <div class="col-lg-4">
-          <img src="images/faf.png" alt="" height="72" />
-
-          <form class="form-signin">
-            <input
-              id="startData"
-              type="text"
-              class="form-control top"
-              placeholder="Start Nodes (separated by spaces)"
-              name="start"
-              required
-              autofocus
-              autocomplete="off"
-            />
-
-            <input
-              id="endData"
-              type="text"
-              class="form-control bottom"
-              placeholder="End Nodes (separated by spaces)"
-              name="end"
-              required
-              autocomplete="off"
-            />
-
-            <button
-              id="maxFlowBtn"
-              class="btn btn-lg btn-warning btn-block"
-              type="button"
-            >
-              Maximum Flow
-            </button>
-
-            <button
-              id="shortPathBtn"
-              class="btn btn-lg btn-warning btn-block"
-              type="button"
-            >
-              Shortest Path
-            </button>
-
-            <button
-              id="minTreeBtn"
-              class="btn btn-lg btn-warning btn-block"
-              type="button"
-            >
-              Minimum Spanning Tree
-            </button>
-            <div id="result"></div>
-          </form>
+        <div class="col-lg-6">
+          <img src="images/faf.png"/>
         </div>
-
-        <div class="col-lg-8">
+        <div class="col-lg-6">
           <h1>Graph Algorithms</h1>
-          <svg id="svgID" width="600" height="500"></svg>
         </div>
       </div>
+      
+          <svg id="svgID" width="1000" height="600"></svg>
 
       <form>
         <div class="row">
-          <div class="col-lg-8">
+          <div class="col-lg-4">
+  
+            <form class="form-signin">
+              <input
+                id="startData"
+                type="text"
+                class="form-control top"
+                placeholder="Start Nodes (separated by spaces)"
+                name="start"
+                required
+                autofocus
+                autocomplete="off"
+              />
+  
+              <input
+                id="endData"
+                type="text"
+                class="form-control bottom"
+                placeholder="End Nodes (separated by spaces)"
+                name="end"
+                required
+                autocomplete="off"
+              />
+  
+              <button
+                id="maxFlowBtn"
+                class="btn btn-lg btn-warning btn-block"
+                type="button"
+              >
+                Maximum Flow
+              </button>
+  
+              <button
+                id="shortPathBtn"
+                class="btn btn-lg btn-warning btn-block"
+                type="button"
+              >
+                Shortest Path
+              </button>
+  
+              <button
+                id="minTreeBtn"
+                class="btn btn-lg btn-warning btn-block"
+                type="button"
+              >
+                Minimum Spanning Tree
+              </button>
+              <div id="result"></div>
+            </form>
+          </div>
+
+          <div class="col-lg-6">
             <div class="form-group">
               <textarea
                 id="textAreaID"
@@ -99,12 +102,13 @@
                 placeholder="Every line should contain two strings (source and target) and an integer (capacity) all separated by space.
 Pumpkin FAF 203
 FCIM Pumpkin 69
-These two lines will create two edges with the flow: FCIM -69-> Pimpkin -203-> FAF.
+These two lines will create two edges with the flow:
+FCIM -69-> Pimpkin -203-> FAF.
 Please don't create disconnected graphs, for your own good."
               ></textarea>
             </div>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-2">
             <button class="btn btn-warning" type="button" id="addEdgesBtn">
               Add Edges
             </button>
