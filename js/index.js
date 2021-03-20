@@ -83,10 +83,8 @@ function getNode(name) {
 function getText() {
   let lines = document.getElementById("textAreaID").value.split("\n");
   let edgeData;
-  console.log(lines);
   for (let i = 0; i < lines.length; i++) {
     edgeData = lines[i].split(" ");
-    console.log(edgeData);
     if (edgeData.length >= 3) {
       let c = parseInt(edgeData[2], 10);
       if (isNaN(c)) {
@@ -131,6 +129,27 @@ document.getElementById("deleteGraphBtn").onclick = function () {
   graphInit();
 };
 
+// Load File Button
+document.getElementById("input-file").addEventListener("change", getFile);
+
+function getFile(event) {
+  const input = event.target;
+  if ("files" in input && input.files.length > 0) {
+    readFileContent(input.files[0]);
+  }
+}
+
+function readFileContent(file) {
+  const reader = new FileReader();
+  return new Promise((resolve, reject) => {
+    reader.onload = (event) =>
+      (document.getElementById("textAreaID").value = event.target.result);
+    reader.onerror = (error) => reject(error);
+    reader.readAsText(file);
+  });
+}
+
+// Scroll to the top of the window when page is loaded
 window.scrollTo(0, 0);
 
 ///////////////    D3.js    ////////////////
@@ -155,7 +174,7 @@ function graphInit() {
 
   svg = d3.select("svg");
   var colors = d3.scaleOrdinal(d3.schemeCategory10),
-    width = window.innerWidth*0.75,
+    width = window.innerWidth * 0.75,
     height = +svg.attr("height"),
     node,
     link,
