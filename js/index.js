@@ -131,6 +131,8 @@ document.getElementById("deleteGraphBtn").onclick = function () {
   graphInit();
 };
 
+window.scrollTo(0, 0);
+
 ///////////////    D3.js    ////////////////
 
 // These variables are used by D3.js to plot the graph
