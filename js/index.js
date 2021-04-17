@@ -111,14 +111,21 @@ document.getElementById("maxFlowBtn").onclick = function () {
     alert("Add valid start and end nodes.");
   }
   graphRemove();
-  graphInit();
+  graphInit(1);
+};
+
+// Min Tree Button
+document.getElementById("minTreeBtn").onclick = function () {
+  result.innerHTML = "Minimum spanning tree weight is " + minTree(links, nodes);
+  graphRemove();
+  graphInit(3);
 };
 
 // Add Edge Button
 document.getElementById("addEdgesBtn").onclick = function () {
   getText();
   graphRemove();
-  graphInit();
+  graphInit(1);
 };
 
 // Delete Graph Button
@@ -126,7 +133,7 @@ document.getElementById("deleteGraphBtn").onclick = function () {
   nodes = [];
   links = [];
   graphRemove();
-  graphInit();
+  graphInit(1);
 };
 
 // Load File Button
@@ -168,7 +175,7 @@ function graphRemove() {
 }
 
 // Draws a new graph
-function graphInit() {
+function graphInit(algo) {
   d3links = JSON.parse(JSON.stringify(links));
   d3nodes = JSON.parse(JSON.stringify(nodes));
 
@@ -206,26 +213,58 @@ function graphInit() {
 
   var simulation = d3
     .forceSimulation(d3nodes)
-    .force("link", d3.forceLink().links(d3links)) //.distance(150).strength(1))
-    .force("charge", d3.forceManyBody().strength(-1000))
+    .force("link", d3.forceLink().links(d3links).distance(50).strength(0.75))
+    .force("charge", d3.forceManyBody().strength(-1500))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
-  update(d3links, d3nodes);
+  link = svg
+    .selectAll(".link")
+    .data(d3links)
+    .enter()
+    .append("line")
+    .attr("stroke-width", 5)
+    .attr("stroke", function (d) {
+      if (algo === 3 && d.flow === 1) return "yellow";
+      else return "lightgray";
+    })
+    .attr("stroke-opacity", "0.5")
+    .attr("class", "link")
+    .attr("marker-end", function () {
+      if (algo === 1) return "url(#arrowhead)";
+      else return " ";
+    });
 
-  // ---
-  function update(links, nodes) {
-    link = svg
-      .selectAll(".link")
-      .data(links)
-      .enter()
-      .append("line")
-      .attr("stroke-width", 5)
-      .attr("stroke", "lightgray")
-      .attr("stroke-opacity", "0.5")
-      .attr("class", "link")
-      .attr("marker-end", "url(#arrowhead)");
+  edgepaths = svg
+    .selectAll(".edgepath")
+    .data(d3links)
+    .enter()
+    .append("path")
+    .attr("class", "edgepath")
+    .attr("fill-opacity", 0)
+    .attr("stroke-opacity", 0)
+    .attr("id", (d, i) => "edgepath" + i)
+    .style("pointer-events", "none");
 
-    link.append("title").text(function (d) {
+  edgelabels = svg
+    .selectAll(".edgelabel")
+    .data(d3links)
+    .enter()
+    .append("text")
+    .style("pointer-events", "none")
+    .attr("class", "edgelabel")
+    .attr("id", (d, i) => "edgelabel" + i)
+    .attr("writing-mode", "vertical-rl")
+    .attr("font-size", 11)
+    .attr("fill", "white");
+
+  edgelabels
+    .append("textPath")
+    .attr("xlink:href", (d, i) => "#edgepath" + i)
+    .style("text-anchor", "middle")
+    .style("pointer-events", "none")
+    .attr("startOffset", "50%")
+    .text(function (d) {
+      if (algo === 3) return d.capacity;
       if (d.flow) {
         return d.flow + " / " + d.capacity;
       } else {
@@ -233,69 +272,31 @@ function graphInit() {
       }
     });
 
-    edgepaths = svg
-      .selectAll(".edgepath")
-      .data(links)
-      .enter()
-      .append("path")
-      .attr("class", "edgepath")
-      .attr("fill-opacity", 0)
-      .attr("stroke-opacity", 0)
-      .attr("id", (d, i) => "edgepath" + i)
-      .style("pointer-events", "none");
+  node = svg
+    .selectAll(".node")
+    .data(d3nodes)
+    .enter()
+    .append("g")
+    .attr("class", "node");
 
-    edgelabels = svg
-      .selectAll(".edgelabel")
-      .data(links)
-      .enter()
-      .append("text")
-      .style("pointer-events", "none")
-      .attr("class", "edgelabel")
-      .attr("id", (d, i) => "edgelabel" + i)
-      .attr("writing-mode", "vertical-rl")
-      .attr("font-size", 11)
-      .attr("fill", "white");
+  node
+    .append("circle")
+    .attr("r", 7)
+    .style("fill", (d, i) => colors(i))
+    .attr("stroke", "white")
+    .attr("stroke-width", "2px");
 
-    edgelabels
-      .append("textPath")
-      .attr("xlink:href", (d, i) => "#edgepath" + i)
-      .style("text-anchor", "middle")
-      .style("pointer-events", "none")
-      .attr("startOffset", "50%")
-      .text(function (d) {
-        if (d.flow) {
-          return d.flow + " / " + d.capacity;
-        } else {
-          return 0 + " / " + d.capacity;
-        }
-      });
+  node.append("title").text((d) => d.name);
 
-    node = svg
-      .selectAll(".node")
-      .data(nodes)
-      .enter()
-      .append("g")
-      .attr("class", "node");
+  node
+    .append("text")
+    .attr("dy", -10)
+    .text((d) => d.name)
+    .attr("fill", "white");
 
-    node
-      .append("circle")
-      .attr("r", 7)
-      .style("fill", (d, i) => colors(i))
-      .attr("stroke", "white")
-      .attr("stroke-width", "2px");
+  simulation.nodes(d3nodes).on("tick", ticked);
 
-    node.append("title").text((d) => d.name);
-
-    node
-      .append("text")
-      .attr("dy", -10)
-      .text((d) => d.name)
-      .attr("fill", "white");
-
-    simulation.nodes(nodes).on("tick", ticked);
-
-    simulation.force("link").links(links);
-  }
+  simulation.force("link").links(d3links);
 
   function ticked() {
     link
@@ -314,4 +315,4 @@ function graphInit() {
 }
 
 // The firs graph render
-graphInit();
+graphInit(1);
