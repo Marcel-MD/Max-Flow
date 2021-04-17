@@ -172,10 +172,16 @@ function graphInit() {
   d3links = JSON.parse(JSON.stringify(links));
   d3nodes = JSON.parse(JSON.stringify(nodes));
 
+  // Screen width to make the app more responsive
+  var swidth = window.innerWidth > 0 ? window.innerWidth : screen.width;
+  // When the number of nodes will increase, the svg size will increase as well
+  document.getElementById("svgID").setAttribute("height", d3nodes.length * 100);
+  document.getElementById("svgID").setAttribute("width", swidth * 0.8);
+
   svg = d3.select("svg");
   var colors = d3.scaleOrdinal(d3.schemeCategory10),
-    width = window.innerWidth * 0.75,
-    height = +svg.attr("height"),
+    width = swidth * 0.8,
+    height = d3nodes.length * 100,
     node,
     link,
     edgepaths,
