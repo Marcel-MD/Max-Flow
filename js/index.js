@@ -1,4 +1,4 @@
-/////////    Our Graph /////////
+///////////////    Our Graph    ////////////////
 
 // Graph Nodes
 let nodes = [
@@ -27,7 +27,7 @@ let links = [
 let s = [];
 let t = [];
 
-///////////    Text area / Editor input    //////////////
+//////////////////    Text area / Editor input    ////////////////////
 
 // Adds start end nodes from DOM
 function addStartEndNodes() {
@@ -98,7 +98,7 @@ function getText() {
   }
 }
 
-////////   Buttons functionality    ///////////
+/////////////////   Buttons functionality    ///////////////////
 
 var result = document.getElementById("result");
 
@@ -156,12 +156,10 @@ function readFileContent(file) {
   });
 }
 
-// Scroll to the top of the window when page is loaded
-window.scrollTo(0, 0);
+/////////////////////////    D3.js    ////////////////////////////
 
-///////////////    D3.js    ////////////////
+// Credit to Vlada for the big comments on D3.js
 
-// These variables are used by D3.js to plot the graph
 // These copies are created because D3.js changes some esential object proprieties and max flow algorithm won't work
 let d3links; // Here will be a copy of links
 let d3nodes; // Here will be a copy of nodes
@@ -194,6 +192,7 @@ function graphInit(algo) {
     edgepaths,
     edgelabels;
 
+  // All the code below is for arow head
   svg
     .append("defs")
     .append("marker")
@@ -210,6 +209,13 @@ function graphInit(algo) {
     .attr("fill", "#999")
     .attr("fill-opacity", "0.8")
     .style("stroke", "none");
+
+  /* A note about forces:
+    D3 force simulation works like this:
+    the basic stuff is forceManyBody, which makes nodes spring apart
+    or get together, centerForce, which pulls the graph towards a given
+    center, and linkForce, which sets the distance between nodes, etc.
+    For a more in-depth analysis, read D3 API. :) */
 
   var simulation = d3
     .forceSimulation(d3nodes)
@@ -233,6 +239,17 @@ function graphInit(algo) {
       if (algo === 1) return "url(#arrowhead)";
       else return " ";
     });
+
+  /* A note about edgepaths & edgelabels:
+    they are not obligatory. BUT because we want edgelabels,
+    we need edge paths. Edgepaths are nothing but paths (read about D3 paths)
+    which follow the original links. Aka have the same shape.
+    Here they are set to invisible because we only need them for labels.
+    Now edgelabels are simply a text element which is mapped to the id of an
+    edgepath which in this case display the weight of the link.
+    Most of the attributes are prety self-explanatory, but the
+    "xlink:href" one is what maps the label to the path aka assures that it's 
+    in the right place. */
 
   edgepaths = svg
     .selectAll(".edgepath")
@@ -294,6 +311,21 @@ function graphInit(algo) {
     .text((d) => d.name)
     .attr("fill", "white");
 
+  /* A note about ticked:
+  To be honest I don't fully understand it myself :D
+  But, the basics of it is that it's needed for the graph to
+  set the right positions and maintain said positions for 
+  the nodes, links and paths. Because the nodes in this case are
+  represented by a group, their position is updated with the
+  transform attribute (read about SVG groups and transform!).
+  
+  The links, because they are only lines(read about SVG lines!)
+  are updated by changing their initial and finishing x,y coord.
+  
+  And paths, because they are paths (read about D3 paths!)
+  are updated using M and L commands + link coordinates. Whew.
+  */
+
   simulation.nodes(d3nodes).on("tick", ticked);
 
   simulation.force("link").links(d3links);
@@ -316,3 +348,6 @@ function graphInit(algo) {
 
 // The firs graph render
 graphInit(1);
+
+// Scroll to the top of the window when page is loaded
+window.scrollTo(0, 0);
