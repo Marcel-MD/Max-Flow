@@ -5,10 +5,6 @@ function minTree(links, nodes) {
 
   var nodesList = new Array(nrOfNodes);
 
-  for (let i = 0; i < nrofLinks; i++) {
-    links[i].flow = 0;
-  }
-
   for (let i = 0; i < nrOfNodes; i++) {
     nodesList[i] = i;
   }

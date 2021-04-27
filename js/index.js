@@ -98,6 +98,11 @@ function getText() {
   }
 }
 
+function clearColorLinks() {
+  for (let i = 0; i < links.length; i++) {
+    links[i].flow = 0;
+  }
+}
 /////////////////   Buttons functionality    ///////////////////
 
 var result = document.getElementById("result");
@@ -114,8 +119,22 @@ document.getElementById("maxFlowBtn").onclick = function () {
   graphInit(1);
 };
 
+//Shortest Path Button
+document.getElementById("shortPathBtn").onclick = function () {
+  addStartEndNodes();
+  clearColorLinks();
+  if (s.length != 0 && t.length != 0) {
+    result.innerHTML = "Shortest path is " + Dijkstra(links, nodes, s, t);
+  } else {
+    alert("Add valid start and end nodes.");
+  }
+  graphRemove();
+  graphInit(2);
+};
+
 // Min Tree Button
 document.getElementById("minTreeBtn").onclick = function () {
+  clearColorLinks();
   result.innerHTML = "Minimum spanning tree weight is " + minTree(links, nodes);
   graphRemove();
   graphInit(3);
@@ -230,7 +249,7 @@ function graphInit(algo) {
     .append("line")
     .attr("stroke-width", 5)
     .attr("stroke", function (d) {
-      if (algo === 3 && d.flow === 1) return "yellow";
+      if ((algo === 3 || algo === 2) && d.flow === 1) return "yellow";
       else return "lightgray";
     })
     .attr("stroke-opacity", "0.5")
@@ -240,16 +259,18 @@ function graphInit(algo) {
       else return " ";
     });
 
-  /* A note about edgepaths & edgelabels:
+  /* 
+  A note about edgepaths & edgelabels:
     they are not obligatory. BUT because we want edgelabels,
     we need edge paths. Edgepaths are nothing but paths (read about D3 paths)
     which follow the original links. Aka have the same shape.
     Here they are set to invisible because we only need them for labels.
     Now edgelabels are simply a text element which is mapped to the id of an
-    edgepath which in this case display the weight of the link.
+    edgepath which in this case display the weight of the link (or capacity).
     Most of the attributes are prety self-explanatory, but the
     "xlink:href" one is what maps the label to the path aka assures that it's 
-    in the right place. */
+    in the right place. 
+    */
 
   edgepaths = svg
     .selectAll(".edgepath")
@@ -281,7 +302,7 @@ function graphInit(algo) {
     .style("pointer-events", "none")
     .attr("startOffset", "50%")
     .text(function (d) {
-      if (algo === 3) return d.capacity;
+      if (algo === 3 || algo === 2) return d.capacity;
       if (d.flow) {
         return d.flow + " / " + d.capacity;
       } else {
