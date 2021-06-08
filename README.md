@@ -11,4 +11,5 @@ University project made for Data Structure and Alghoritms course.
 
 ## Demo
 old version: https://marcel-md.github.io/Max-Flow/
+<br/>
 improved version: https://madalv.github.io/algorithms-on-graphs-web-app/
